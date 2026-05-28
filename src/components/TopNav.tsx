@@ -24,7 +24,7 @@ const TopNav: React.FC = () => {
     <nav className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 transition-colors ${
       scrolled ? "bg-black/90" : "bg-gradient-to-b from-black/70 to-transparent"
     }`}>
-      <NavLink to="/" className="text-red-600 text-3xl font-bold">NETFLIX</NavLink>
+      <NavLink to="/" className="text-red-600 text-3xl font-bold">FilmDB</NavLink>
       <ul className="hidden md:flex gap-6 text-gray-300 text-sm">
         <li>
           <NavLink to="/" className={({ isActive }: { isActive: boolean }) => `hover:text-white ${isActive ? 'text-white' : ''}`}>Home</NavLink>

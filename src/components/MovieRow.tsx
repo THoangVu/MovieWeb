@@ -1,53 +1,92 @@
-import React from "react";
+import React, { useRef } from "react";
 import MovieCard, { type Movie } from "./MovieCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
+import "swiper/css";
+import "swiper/css/navigation";
 
 type MovieRowProps = {
-  title: string;
+  title?: string;
   movies: Movie[];
-  onSelect?: (movie: Movie) => void;
 };
 
-const MovieRow: React.FC<MovieRowProps> = ({ title, movies, onSelect }) => {
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
-
-  const scrollBy = (offset: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: offset, behavior: "smooth" });
-  };
+const MovieRow: React.FC<MovieRowProps> = ({
+  title,
+  movies,
+}) => {
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <section className="relative">
-      <h3 className="text-white text-xl md:text-2xl font-semibold mb-3 px-6">{title}</h3>
-      <div className="group/row relative">
-        {/* Left button */}
+    <section className="px-6 mb-10">
+      {title && (
+        <h2 className="text-white text-2xl font-bold mb-4">
+          {title}
+        </h2>
+      )}
+
+      <div className="relative">
+        {/* Prev */}
         <button
-          aria-label="Scroll left"
-          onClick={() => scrollBy(-600)}
-          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 h-32 w-10 items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-r opacity-0 group-hover/row:opacity-100 transition"
+          ref={prevRef}
+          className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur rounded-full flex items-center justify-center transition"
         >
-          ‹
+          <IoIosArrowBack className="text-white text-xl" />
         </button>
 
-        {/* Scroll area */}
-        <div
-          ref={scrollRef}
-          className="no-scrollbar overflow-x-auto overflow-y-visible px-6"
-        >
-          <div className="flex gap-3">
-            {movies.map((m) => (
-              <MovieCard key={m.id} movie={m} onClick={onSelect} />
-            ))}
-          </div>
-        </div>
+        <Swiper
+          modules={[Navigation]}
+          navigation={false}
+          spaceBetween={16}
+          slidesPerView={2}
+          breakpoints={{
+            640: {
+              slidesPerView: 3,
+            },
+            768: {
+              slidesPerView: 4,
+            },
+            1024: {
+              slidesPerView: 5,
+            },
+            1280: {
+              slidesPerView: 6,
+            },
+          }}
+          onSwiper={(swiper) => {
+            setTimeout(() => {
+              if (
+                swiper.params.navigation &&
+                typeof swiper.params.navigation !==
+                  "boolean"
+              ) {
+                swiper.params.navigation.prevEl =
+                  prevRef.current;
+                swiper.params.navigation.nextEl =
+                  nextRef.current;
+              }
 
-        {/* Right button */}
-        <button
-          aria-label="Scroll right"
-          onClick={() => scrollBy(600)}
-          className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 h-32 w-10 items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-l opacity-0 group-hover/row:opacity-100 transition"
+              swiper.navigation.destroy();
+              swiper.navigation.init();
+              swiper.navigation.update();
+            });
+          }}
         >
-          ›
+          {movies.map((movie) => (
+            <SwiperSlide key={movie.id}>
+              <MovieCard movie={movie} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Next */}
+        <button
+          ref={nextRef}
+          className="absolute right-[-20px] top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur rounded-full flex items-center justify-center transition"
+        >
+          <IoIosArrowForward className="text-white text-xl" />
         </button>
       </div>
     </section>
@@ -55,5 +94,3 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, onSelect }) => {
 };
 
 export default MovieRow;
-
-

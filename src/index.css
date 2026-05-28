@@ -1,20 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Hide horizontal scrollbar for rows */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-html, body, #root {
-  height: 100%;
-}
-body {
-  background-color: #000;
-}
-
